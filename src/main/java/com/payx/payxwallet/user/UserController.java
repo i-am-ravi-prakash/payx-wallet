@@ -1,7 +1,7 @@
 package com.payx.payxwallet.user;
 
-import com.payx.payxwallet.user.dto.UserRegistrationRequest;
-import com.payx.payxwallet.user.dto.UserResponse;
+import com.payx.payxwallet.dto.UserRegistrationRequest;
+import com.payx.payxwallet.dto.UserResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,7 +1,8 @@
 package com.payx.payxwallet.user;
 
-import com.payx.payxwallet.user.dto.UserRegistrationRequest;
-import com.payx.payxwallet.user.dto.UserResponse;
+import com.payx.payxwallet.dto.UserRegistrationRequest;
+import com.payx.payxwallet.dto.UserResponse;
+import com.payx.payxwallet.wallet.WalletService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,9 +12,17 @@ import java.time.Instant;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final WalletService walletService;
 
+    /**
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+     */
+
+    public UserService(UserRepository userRepository, WalletService walletService) {
+        this.userRepository = userRepository;
+        this.walletService = walletService;
     }
 
     @Transactional
@@ -36,9 +45,10 @@ public class UserService {
                 Instant.now()
         );
 
-        User saved = userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        walletService.createWalletForUser(savedUser.getId());
 
-        return mapToResponse(saved);
+        return mapToResponse(savedUser);
     }
 
     public UserResponse getUserById(String id) {

@@ -1,4 +1,4 @@
-package com.payx.payxwallet.user.dto;
+package com.payx.payxwallet.dto;
 
 import java.time.Instant;
 
