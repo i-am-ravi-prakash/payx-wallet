@@ -1,4 +1,4 @@
-package com.payx.payx_wallet.user.dto;
+package com.payx.payxwallet.user.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

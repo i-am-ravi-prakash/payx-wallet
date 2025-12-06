@@ -1,15 +1,9 @@
-package com.payx.payx_wallet.user;
-
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+package com.payx.payxwallet.user.dto;
 
 import java.time.Instant;
 
-@Document(collection = "users")
-public class User {
+public class UserResponse {
 
-    @Id
     private String id;
     private String fullName;
     private String email;
@@ -17,16 +11,20 @@ public class User {
     private boolean kycVerified;
     private Instant createdAt;
 
-    public User(){
+    public UserResponse() {
     }
 
-    public User(String fullName, String email, String mobileNumber, boolean kycVerified, Instant createdAt) {
+    public UserResponse(String id, String fullName, String email,
+                        String mobileNumber, boolean kycVerified, Instant createdAt) {
+        this.id = id;
         this.fullName = fullName;
         this.email = email;
         this.mobileNumber = mobileNumber;
         this.kycVerified = kycVerified;
         this.createdAt = createdAt;
     }
+
+    // Getters & setters
 
     public String getId() {
         return id;
@@ -36,36 +34,40 @@ public class User {
         return fullName;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getMobileNumber() {
         return mobileNumber;
     }
 
-    public void setMobileNumber(String mobileNumber) {
-        this.mobileNumber = mobileNumber;
-    }
-
     public boolean isKycVerified() {
         return kycVerified;
     }
 
-    public void setKycVerified(boolean kycVerified) {
-        this.kycVerified = kycVerified;
-    }
-
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
+    }
+
+    public void setKycVerified(boolean kycVerified) {
+        this.kycVerified = kycVerified;
     }
 
     public void setCreatedAt(Instant createdAt) {

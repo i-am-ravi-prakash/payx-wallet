@@ -1,9 +1,15 @@
-package com.payx.payx_wallet.user.dto;
+package com.payx.payxwallet.user;
+
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
 
-public class UserResponse {
+@Document(collection = "users")
+public class User {
 
+    @Id
     private String id;
     private String fullName;
     private String email;
@@ -11,20 +17,16 @@ public class UserResponse {
     private boolean kycVerified;
     private Instant createdAt;
 
-    public UserResponse() {
+    public User(){
     }
 
-    public UserResponse(String id, String fullName, String email,
-                        String mobileNumber, boolean kycVerified, Instant createdAt) {
-        this.id = id;
+    public User(String fullName, String email, String mobileNumber, boolean kycVerified, Instant createdAt) {
         this.fullName = fullName;
         this.email = email;
         this.mobileNumber = mobileNumber;
         this.kycVerified = kycVerified;
         this.createdAt = createdAt;
     }
-
-    // Getters & setters
 
     public String getId() {
         return id;
@@ -34,40 +36,36 @@ public class UserResponse {
         return fullName;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public String getMobileNumber() {
-        return mobileNumber;
-    }
-
-    public boolean isKycVerified() {
-        return kycVerified;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
+
     public void setMobileNumber(String mobileNumber) {
         this.mobileNumber = mobileNumber;
     }
 
+    public boolean isKycVerified() {
+        return kycVerified;
+    }
+
     public void setKycVerified(boolean kycVerified) {
         this.kycVerified = kycVerified;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
     }
 
     public void setCreatedAt(Instant createdAt) {

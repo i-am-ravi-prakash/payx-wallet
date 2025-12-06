@@ -1,4 +1,4 @@
-package com.payx.payx_wallet.user;
+package com.payx.payxwallet.user;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 

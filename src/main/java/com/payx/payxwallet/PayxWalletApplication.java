@@ -1,4 +1,4 @@
-package com.payx.payx_wallet;
+package com.payx.payxwallet;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

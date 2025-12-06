@@ -1,4 +1,4 @@
-package com.payx.payx_wallet.health;
+package com.payx.payxwallet.health;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,4 +1,4 @@
-package com.payx.payx_wallet;
+package com.payx.payxwallet;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
