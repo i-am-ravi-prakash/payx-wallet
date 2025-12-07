@@ -1,4 +1,4 @@
-# PayX Wallet – Digital Wallet System (Spring Boot + MongoDB)
+# PayX Wallet – Digital Wallet System (Project in progress)
 
 A backend implementation of a lightweight **digital wallet system**, built using **Spring Boot**, **MongoDB**, and **REST APIs**.  
 This project is designed for backend developers who want to learn Spring Boot by building a real, production-style application.
