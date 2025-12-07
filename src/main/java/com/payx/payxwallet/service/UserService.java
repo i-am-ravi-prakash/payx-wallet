@@ -1,12 +1,14 @@
-package com.payx.payxwallet.user;
+package com.payx.payxwallet.service;
 
 import com.payx.payxwallet.dto.UserRegistrationRequest;
 import com.payx.payxwallet.dto.UserResponse;
-import com.payx.payxwallet.wallet.WalletService;
+import com.payx.payxwallet.entity.User;
+import com.payx.payxwallet.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -14,13 +16,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final WalletService walletService;
 
-    /**
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-     */
-
-    public UserService(UserRepository userRepository, WalletService walletService) {
+    public UserService(UserRepository userRepository,
+                       WalletService walletService) {
         this.userRepository = userRepository;
         this.walletService = walletService;
     }
@@ -28,7 +25,6 @@ public class UserService {
     @Transactional
     public UserResponse registerUser(UserRegistrationRequest request) {
 
-        // Check duplicates by email or mobile
         userRepository.findByEmail(request.getEmail()).ifPresent(u -> {
             throw new IllegalArgumentException("User with this email already exists");
         });
@@ -37,24 +33,29 @@ public class UserService {
             throw new IllegalArgumentException("User with this mobile number already exists");
         });
 
+
         User user = new User(
                 request.getFullName(),
                 request.getEmail(),
                 request.getMobileNumber(),
-                false, // kycVerified false by default
+                false,
                 Instant.now()
         );
 
-        User savedUser = userRepository.save(user);
-        walletService.createWalletForUser(savedUser.getId());
+        User saved = userRepository.save(user);
+        walletService.createWalletForUser(saved.getId());
 
-        return mapToResponse(savedUser);
+        return mapToResponse(saved);
     }
 
     public UserResponse getUserById(String id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + id));
         return mapToResponse(user);
+    }
+
+    public List<User> getAll(){
+        return userRepository.findAll();
     }
 
     private UserResponse mapToResponse(User user) {

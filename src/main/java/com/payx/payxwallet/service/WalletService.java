@@ -1,7 +1,10 @@
-package com.payx.payxwallet.wallet;
+package com.payx.payxwallet.service;
 
 import com.payx.payxwallet.dto.AddMoneyRequest;
 import com.payx.payxwallet.dto.WalletResponse;
+import com.payx.payxwallet.entity.Wallet;
+import com.payx.payxwallet.enums.TransactionType;
+import com.payx.payxwallet.repository.WalletRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -11,9 +14,11 @@ import java.time.Instant;
 public class WalletService {
 
     private final WalletRepository walletRepository;
+    private final TransactionService transactionService;
 
-    public WalletService(WalletRepository walletRepository) {
+    public WalletService(WalletRepository walletRepository, TransactionService transactionService) {
         this.walletRepository = walletRepository;
+        this.transactionService = transactionService;
     }
 
     // Create wallet when user registers
@@ -48,6 +53,15 @@ public class WalletService {
         wallet.setUpdatedAt(Instant.now());
 
         Wallet updated = walletRepository.save(wallet);
+
+        // Record credit transaction in ledger
+        transactionService.recordTransaction(
+                userId,
+                TransactionType.CREDIT,
+                request.getAmount(),
+                updated.getBalance(),
+                "ADD_MONEY"
+        );
 
         return new WalletResponse(
                 updated.getUserId(),

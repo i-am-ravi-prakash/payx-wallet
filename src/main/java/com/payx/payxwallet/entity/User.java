@@ -1,14 +1,19 @@
-package com.payx.payxwallet.dto;
+package com.payx.payxwallet.entity;
+
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
 
-@Getter
+@Document(collection = "users")
 @Setter
-public class UserResponse {
+@Getter
+public class User {
 
+    @Id
     private String id;
     private String fullName;
     private String email;
@@ -16,12 +21,11 @@ public class UserResponse {
     private boolean kycVerified;
     private Instant createdAt;
 
-    public UserResponse() {
+    public User(){
     }
 
-    public UserResponse(String id, String fullName, String email,
-                        String mobileNumber, boolean kycVerified, Instant createdAt) {
-        this.id = id;
+    public User(String fullName, String email, String mobileNumber,
+                boolean kycVerified, Instant createdAt) {
         this.fullName = fullName;
         this.email = email;
         this.mobileNumber = mobileNumber;

@@ -1,5 +1,9 @@
-package com.payx.payxwallet.wallet;
+package com.payx.payxwallet.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -7,6 +11,8 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 @Document(collection = "wallets")
+@Getter
+@Setter
 public class Wallet {
 
     @Id
@@ -24,34 +30,6 @@ public class Wallet {
         this.userId = userId;
         this.balance = balance;
         this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public BigDecimal getBalance() {
-        return balance;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
-    }
-
-    public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
     }
 }

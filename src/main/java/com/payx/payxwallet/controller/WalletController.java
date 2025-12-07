@@ -1,7 +1,8 @@
-package com.payx.payxwallet.wallet;
+package com.payx.payxwallet.controller;
 
 import com.payx.payxwallet.dto.AddMoneyRequest;
 import com.payx.payxwallet.dto.WalletResponse;
+import com.payx.payxwallet.service.WalletService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

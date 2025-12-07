@@ -2,9 +2,13 @@ package com.payx.payxwallet.dto;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
+@Setter
+@Getter
 public class AddMoneyRequest {
 
     @NotNull
@@ -12,12 +16,4 @@ public class AddMoneyRequest {
     private BigDecimal amount;
 
     public AddMoneyRequest() { }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
 }

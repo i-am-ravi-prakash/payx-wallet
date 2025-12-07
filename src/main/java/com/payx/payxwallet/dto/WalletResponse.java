@@ -1,8 +1,13 @@
 package com.payx.payxwallet.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.time.Instant;
 
+@Setter
+@Getter
 public class WalletResponse {
 
     private String userId;
@@ -19,19 +24,4 @@ public class WalletResponse {
         this.updatedAt = updatedAt;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public BigDecimal getBalance() {
-        return balance;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
 }

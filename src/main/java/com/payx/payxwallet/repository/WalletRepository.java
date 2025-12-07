@@ -1,5 +1,6 @@
-package com.payx.payxwallet.wallet;
+package com.payx.payxwallet.repository;
 
+import com.payx.payxwallet.entity.Wallet;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;
