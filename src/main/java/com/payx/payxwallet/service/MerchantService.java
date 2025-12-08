@@ -14,9 +14,11 @@ import java.util.stream.Collectors;
 public class MerchantService {
 
     private final MerchantRepository repo;
+    private WalletService walletService;
 
-    public MerchantService(MerchantRepository repo) {
+    public MerchantService(MerchantRepository repo, WalletService walletService) {
         this.repo = repo;
+        this.walletService = walletService;
     }
 
     public MerchantResponse createMerchant(MerchantRequest request) {
@@ -29,6 +31,7 @@ public class MerchantService {
         );
 
         Merchant saved = repo.save(merchant);
+        walletService.createWalletForUser(saved.getId());
 
         return toResponse(saved);
     }
