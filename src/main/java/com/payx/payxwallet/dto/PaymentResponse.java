@@ -8,21 +8,23 @@ import java.time.Instant;
 @Getter
 public class PaymentResponse {
 
+    private String paymentId;
     private String userId;
     private String merchantId;
     private BigDecimal amount;
     private BigDecimal userBalanceAfter;
-    private BigDecimal merchantBalanceAfter;
+    private String status;
     private Instant timestamp;
 
-    public PaymentResponse(String userId, String merchantId,
+    public PaymentResponse(String paymentId, String userId, String merchantId,
                            BigDecimal amount, BigDecimal userBalanceAfter,
-                           BigDecimal merchantBalanceAfter, Instant timestamp) {
+                           String status, Instant timestamp) {
+        this.paymentId = paymentId;
         this.userId = userId;
         this.merchantId = merchantId;
         this.amount = amount;
         this.userBalanceAfter = userBalanceAfter;
-        this.merchantBalanceAfter = merchantBalanceAfter;
+        this.status = status;
         this.timestamp = timestamp;
     }
 }

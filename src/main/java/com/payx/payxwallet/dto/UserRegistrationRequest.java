@@ -1,5 +1,6 @@
 package com.payx.payxwallet.dto;
 
+import com.payx.payxwallet.utilities.Constants;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -20,7 +21,7 @@ public class UserRegistrationRequest {
     private String email;
 
     @NotBlank
-    @Pattern(regexp = "^[0-9]{10}$", message = "Mobile number must be exactly 10 digits")
+    @Pattern(regexp = "^[0-9]{10}$", message = Constants.MOBILE_INVALID)
     private String mobileNumber;
 
     public UserRegistrationRequest() {
