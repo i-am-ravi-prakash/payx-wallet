@@ -1,10 +1,14 @@
 package com.payx.payxwallet.service;
 
+import com.payx.payxwallet.dto.PagedTransactionResponse;
 import com.payx.payxwallet.dto.TransactionResponse;
 import com.payx.payxwallet.entity.Transaction;
 import com.payx.payxwallet.repository.TransactionRepository;
 import com.payx.payxwallet.enums.TransactionType;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -32,6 +36,39 @@ public class TransactionService {
                 .stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
+    }
+
+    // Paged transactions with optional type filter
+    public PagedTransactionResponse getPagedTransactionsForUser(String userId,
+                                                                Integer page,
+                                                                Integer size,
+                                                                TransactionType type) {
+
+        int pageNumber = (page != null && page >= 0) ? page : 0;
+        int pageSize = (size != null && size > 0) ? size : 10;
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<Transaction> pageResult;
+
+        if (type != null) {
+            pageResult = transactionRepository.findByUserIdAndTypeOrderByCreatedAtDesc(userId, type, pageable);
+        } else {
+            pageResult = transactionRepository.findByUserIdOrderByCreatedAtDesc(userId, pageable);
+        }
+
+        List<TransactionResponse> content = pageResult.getContent()
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+
+        return new PagedTransactionResponse(
+                content,
+                pageResult.getNumber(),
+                pageResult.getSize(),
+                pageResult.getTotalElements(),
+                pageResult.getTotalPages()
+        );
     }
 
     private TransactionResponse mapToResponse(Transaction txn){

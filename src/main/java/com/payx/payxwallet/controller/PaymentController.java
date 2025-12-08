@@ -18,8 +18,8 @@ public class PaymentController {
     }
 
     @PostMapping
-    public ResponseEntity<PaymentResponse> pay(@Valid @RequestBody PaymentRequest request) {
-        return ResponseEntity.ok(service.makePayment(request));
+    public ResponseEntity<PaymentResponse> pay(@RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey, @Valid @RequestBody PaymentRequest request) {
+        return ResponseEntity.ok(service.makePayment(request, idempotencyKey));
     }
 
     @PostMapping("/{paymentId}/refund")
