@@ -1,6 +1,7 @@
 package com.payx.payxwallet.controller;
 
 import com.payx.payxwallet.dto.AddMoneyRequest;
+import com.payx.payxwallet.dto.WalletBalanceResponse;
 import com.payx.payxwallet.dto.WalletResponse;
 import com.payx.payxwallet.service.WalletService;
 import jakarta.validation.Valid;
@@ -26,6 +27,12 @@ public class WalletController {
     public ResponseEntity<WalletResponse> addMoney(@PathVariable String userId, @Valid @RequestBody AddMoneyRequest request) {
 
         WalletResponse response = walletService.addMoney(userId, request);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{userId}/balance")
+    public ResponseEntity<WalletBalanceResponse> getBalance(@PathVariable String userId) {
+        WalletBalanceResponse response = walletService.getBalance(userId);
         return ResponseEntity.ok(response);
     }
 }

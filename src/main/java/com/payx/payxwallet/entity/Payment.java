@@ -23,6 +23,7 @@ public class Payment {
     private PaymentStatus status;
     private Instant createdAt;
     private Instant refundedAt;
+    private String transactionId;
 
     public Payment(){ }
 

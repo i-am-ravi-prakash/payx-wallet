@@ -97,6 +97,11 @@ public class UserKycService {
         UserKyc kyc = userKycRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("KYC not found for user"));
 
+        // ❗ Block transition VERIFIED -> REJECTED
+        if (kyc.getStatus() == KycStatus.VERIFIED) {
+            throw new IllegalStateException("Verified KYC cannot be rejected");
+        }
+
         kyc.setStatus(KycStatus.REJECTED);
         kyc.setUpdatedAt(Instant.now());
         kyc.setRejectionReason(request.getRejectionReason());

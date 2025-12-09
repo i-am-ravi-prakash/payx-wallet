@@ -1,6 +1,7 @@
 package com.payx.payxwallet.service;
 
 import com.payx.payxwallet.dto.AddMoneyRequest;
+import com.payx.payxwallet.dto.WalletBalanceResponse;
 import com.payx.payxwallet.dto.WalletResponse;
 import com.payx.payxwallet.entity.Wallet;
 import com.payx.payxwallet.enums.TransactionType;
@@ -69,5 +70,14 @@ public class WalletService {
                 updated.getCreatedAt(),
                 updated.getUpdatedAt()
         );
+    }
+
+    public WalletBalanceResponse getBalance(String userId) {
+        Wallet wallet = walletRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Wallet not found for userId: " + userId));
+
+        BigDecimal balance = wallet.getBalance() != null ? wallet.getBalance() : BigDecimal.ZERO;
+
+        return new WalletBalanceResponse(wallet.getUserId(), balance);
     }
 }

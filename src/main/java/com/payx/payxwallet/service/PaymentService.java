@@ -1,6 +1,7 @@
 package com.payx.payxwallet.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.payx.payxwallet.common.TransactionIdGenerator;
 import com.payx.payxwallet.dto.PaymentRequest;
 import com.payx.payxwallet.dto.PaymentResponse;
 import com.payx.payxwallet.entity.Payment;
@@ -108,10 +109,14 @@ public class PaymentService {
                 null
         );
 
+        String transactionId = TransactionIdGenerator.generate("MP", "A");
+        payment.setTransactionId(transactionId);
+
         Payment saved = paymentRepository.save(payment);
 
         PaymentResponse response = new PaymentResponse(
                 saved.getId(),
+                saved.getTransactionId(),
                 request.getUserId(),
                 request.getMerchantId(),
                 request.getAmount(),
@@ -189,6 +194,7 @@ public class PaymentService {
 
         return new PaymentResponse(
                 updatedPayment.getId(),
+                updatedPayment.getTransactionId(),
                 updatedPayment.getUserId(),
                 updatedPayment.getMerchantId(),
                 updatedPayment.getAmount(),

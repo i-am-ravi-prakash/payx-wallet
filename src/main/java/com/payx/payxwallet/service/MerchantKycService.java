@@ -80,6 +80,11 @@ public class MerchantKycService {
         MerchantKyc kyc = merchantKycRepository.findByMerchantId(merchantId)
                 .orElseThrow(() -> new IllegalArgumentException("KYC not found for merchant"));
 
+        // ❗ Block VERIFIED -> REJECTED
+        if (kyc.getStatus() == KycStatus.VERIFIED) {
+            throw new IllegalStateException("Verified KYC cannot be rejected");
+        }
+
         kyc.setStatus(KycStatus.REJECTED);
         kyc.setUpdatedAt(Instant.now());
         kyc.setRejectionReason(request.getRejectionReason());
