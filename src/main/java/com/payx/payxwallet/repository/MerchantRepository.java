@@ -7,4 +7,9 @@ import org.slf4j.LoggerFactory;
 
 public interface MerchantRepository extends MongoRepository<Merchant, String> {
     Logger logger = LoggerFactory.getLogger(MerchantRepository.class);
+    
+    // Example method with logging
+    default void logSampleMessage() {
+        logger.info("Sample log message from MerchantRepository");
+    }
 }

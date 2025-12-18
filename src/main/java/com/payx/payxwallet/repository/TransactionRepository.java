@@ -14,12 +14,27 @@ public interface TransactionRepository extends MongoRepository<Transaction, Stri
 
     Logger logger = LoggerFactory.getLogger(TransactionRepository.class);
 
-    List<Transaction> findByUserIdOrderByCreatedAtDesc(String userId);
+    default List<Transaction> findByUserIdOrderByCreatedAtDesc(String userId) {
+        logger.debug("Finding transactions for userId: {}", userId);
+        return findByUserIdOrderByCreatedAtDescInternal(userId);
+    }
+
+    List<Transaction> findByUserIdOrderByCreatedAtDescInternal(String userId);
 
     // New: paged
-    Page<Transaction> findByUserIdOrderByCreatedAtDesc(String userId, Pageable pageable);
+    default Page<Transaction> findByUserIdOrderByCreatedAtDesc(String userId, Pageable pageable) {
+        logger.debug("Finding paged transactions for userId: {}, pageable: {}", userId, pageable);
+        return findByUserIdOrderByCreatedAtDescInternal(userId, pageable);
+    }
+
+    Page<Transaction> findByUserIdOrderByCreatedAtDescInternal(String userId, Pageable pageable);
 
     // New: paged + filter by type
-    Page<Transaction> findByUserIdAndTypeOrderByCreatedAtDesc(String userId, TransactionType type, Pageable pageable);
+    default Page<Transaction> findByUserIdAndTypeOrderByCreatedAtDesc(String userId, TransactionType type, Pageable pageable) {
+        logger.debug("Finding paged transactions for userId: {}, type: {}, pageable: {}", userId, type, pageable);
+        return findByUserIdAndTypeOrderByCreatedAtDescInternal(userId, type, pageable);
+    }
+
+    Page<Transaction> findByUserIdAndTypeOrderByCreatedAtDescInternal(String userId, TransactionType type, Pageable pageable);
 
 }

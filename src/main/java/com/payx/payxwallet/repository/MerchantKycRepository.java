@@ -11,4 +11,15 @@ public interface MerchantKycRepository extends MongoRepository<MerchantKyc, Stri
     Logger logger = LoggerFactory.getLogger(MerchantKycRepository.class);
 
     Optional<MerchantKyc> findByMerchantId(String merchantId);
+
+    default Optional<MerchantKyc> findByMerchantIdWithLogging(String merchantId) {
+        logger.info("Attempting to find MerchantKyc with merchantId: {}", merchantId);
+        Optional<MerchantKyc> result = findByMerchantId(merchantId);
+        if (result.isPresent()) {
+            logger.info("MerchantKyc found for merchantId: {}", merchantId);
+        } else {
+            logger.warn("No MerchantKyc found for merchantId: {}", merchantId);
+        }
+        return result;
+    }
 }
