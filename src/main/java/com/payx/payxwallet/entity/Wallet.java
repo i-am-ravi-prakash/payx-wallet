@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -14,6 +16,8 @@ import java.time.Instant;
 @Getter
 @Setter
 public class Wallet {
+
+    private static final Logger logger = LoggerFactory.getLogger(Wallet.class);
 
     @Id
     private String id;
@@ -24,6 +28,7 @@ public class Wallet {
     private Instant updatedAt;
 
     public Wallet() {
+        logger.debug("Wallet instance created with default constructor");
     }
 
     public Wallet(String userId, BigDecimal balance, Instant createdAt, Instant updatedAt) {
@@ -31,5 +36,6 @@ public class Wallet {
         this.balance = balance;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        logger.debug("Wallet instance created with parameters: userId={}, balance={}, createdAt={}, updatedAt={}", userId, balance, createdAt, updatedAt);
     }
 }

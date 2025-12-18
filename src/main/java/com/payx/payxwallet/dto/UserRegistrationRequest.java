@@ -7,10 +7,14 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Getter
 @Setter
 public class UserRegistrationRequest {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserRegistrationRequest.class);
 
     @NotBlank
     @Size(min = 2, max = 100)
@@ -25,6 +29,7 @@ public class UserRegistrationRequest {
     private String mobileNumber;
 
     public UserRegistrationRequest() {
+        logger.debug("UserRegistrationRequest object created");
     }
 
 }

@@ -1,10 +1,11 @@
 package com.payx.payxwallet.entity;
 
-
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 
@@ -12,6 +13,8 @@ import java.time.Instant;
 @Setter
 @Getter
 public class User {
+
+    private static final Logger logger = LoggerFactory.getLogger(User.class);
 
     @Id
     private String id;
@@ -22,6 +25,7 @@ public class User {
     private Instant createdAt;
 
     public User(){
+        logger.debug("User object created with default constructor");
     }
 
     public User(String fullName, String email, String mobileNumber,
@@ -31,6 +35,8 @@ public class User {
         this.mobileNumber = mobileNumber;
         this.kycVerified = kycVerified;
         this.createdAt = createdAt;
+        logger.debug("User object created with parameters: fullName={}, email={}, mobileNumber={}, kycVerified={}, createdAt={}", 
+                     fullName, email, mobileNumber, kycVerified, createdAt);
     }
 
 }

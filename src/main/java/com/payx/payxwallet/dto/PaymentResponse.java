@@ -1,12 +1,16 @@
 package com.payx.payxwallet.dto;
 
 import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 
 @Getter
 public class PaymentResponse {
+
+    private static final Logger logger = LoggerFactory.getLogger(PaymentResponse.class);
 
     private String paymentId;
     private String transactionId;
@@ -28,5 +32,6 @@ public class PaymentResponse {
         this.userBalanceAfter = userBalanceAfter;
         this.status = status;
         this.timestamp = timestamp;
+        logger.debug("PaymentResponse created: {}", this);
     }
 }

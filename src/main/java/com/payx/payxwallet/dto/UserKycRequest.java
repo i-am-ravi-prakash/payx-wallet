@@ -4,11 +4,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 
 @Getter
 public class UserKycRequest {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserKycRequest.class);
 
     @NotBlank
     @Pattern(regexp = "^[A-Z]{5}[0-9]{4}[A-Z]{1}$",
@@ -37,4 +41,8 @@ public class UserKycRequest {
     @NotBlank
     @Pattern(regexp = "^[0-9]{6}$", message = "Pincode must be exactly 6 digits")
     private String pincode;
+
+    public UserKycRequest() {
+        logger.debug("UserKycRequest object created");
+    }
 }

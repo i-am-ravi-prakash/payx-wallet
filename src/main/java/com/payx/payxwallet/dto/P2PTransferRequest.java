@@ -4,11 +4,15 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 
 @Getter
 public class P2PTransferRequest {
+
+    private static final Logger logger = LoggerFactory.getLogger(P2PTransferRequest.class);
 
     @NotBlank
     private String fromUserId;
@@ -19,4 +23,8 @@ public class P2PTransferRequest {
 
     @DecimalMin(value = "0.01", message = "Amount must be greater than 0")
     private BigDecimal amount;
+
+    public P2PTransferRequest() {
+        logger.debug("P2PTransferRequest object created");
+    }
 }

@@ -12,6 +12,8 @@ import com.payx.payxwallet.repository.MerchantRepository;
 import com.payx.payxwallet.repository.PaymentRepository;
 import com.payx.payxwallet.repository.WalletRepository;
 import com.payx.payxwallet.utilities.Utilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,6 +22,8 @@ import java.util.Optional;
 
 @Service
 public class PaymentService {
+
+    private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
 
     private final WalletRepository walletRepo;
     private final MerchantRepository merchantRepo;
@@ -43,14 +47,17 @@ public class PaymentService {
     }
 
     public PaymentResponse makePayment(PaymentRequest request, String idempotencyKey) {
+        logger.info("Initiating payment process for user: {}", request.getUserId());
 
         // 1. Idempotency check: if key is present and we have a saved response, return it
         if (idempotencyKey != null && !idempotencyKey.isBlank()) {
             Optional<String> cached = idempotencyService.getSavedResponse(idempotencyKey);
             if (cached.isPresent()) {
                 try {
+                    logger.info("Returning cached response for idempotency key: {}", idempotencyKey);
                     return objectMapper.readValue(cached.get(), PaymentResponse.class);
                 } catch (Exception e) {
+                    logger.error("Failed to deserialize idempotency response", e);
                     throw new RuntimeException("Failed to deserialize idempotency response");
                 }
             }
@@ -64,10 +71,12 @@ public class PaymentService {
                 .orElseThrow(() -> new IllegalArgumentException("Merchant wallet not found"));
 
         if (request.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+            logger.error("Invalid payment amount: {}", request.getAmount());
             throw new IllegalArgumentException("Amount must be greater than 0");
         }
 
         if (userWallet.getBalance().compareTo(request.getAmount()) < 0) {
+            logger.error("Insufficient balance for user: {}", request.getUserId());
             throw new IllegalArgumentException("Insufficient balance");
         }
 
@@ -130,15 +139,18 @@ public class PaymentService {
             idempotencyService.saveResponse(idempotencyKey, response);
         }
 
+        logger.info("Payment processed successfully for user: {}", request.getUserId());
         return response;
     }
 
     public PaymentResponse refundPayment(String paymentId) {
+        logger.info("Initiating refund process for payment ID: {}", paymentId);
 
         Payment payment = paymentRepository.findById(paymentId)
                 .orElseThrow(() -> new IllegalArgumentException("Payment not found"));
 
         if (payment.getStatus() == PaymentStatus.REFUNDED) {
+            logger.error("Payment is already refunded for payment ID: {}", paymentId);
             throw new IllegalArgumentException("Payment is already refunded");
         }
 
@@ -151,11 +163,13 @@ public class PaymentService {
         BigDecimal amount = payment.getAmount();
 
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            logger.error("Invalid payment amount for refund: {}", amount);
             throw new IllegalArgumentException("Invalid payment amount");
         }
 
         // Ensure merchant has enough balance to refund
         if (merchantWallet.getBalance().compareTo(amount) < 0) {
+            logger.error("Merchant wallet has insufficient balance for refund for payment ID: {}", paymentId);
             throw new IllegalArgumentException("Merchant wallet has insufficient balance for refund");
         }
 
@@ -192,6 +206,7 @@ public class PaymentService {
         payment.setRefundedAt(Instant.now());
         Payment updatedPayment = paymentRepository.save(payment);
 
+        logger.info("Refund processed successfully for payment ID: {}", paymentId);
         return new PaymentResponse(
                 updatedPayment.getId(),
                 updatedPayment.getTransactionId(),

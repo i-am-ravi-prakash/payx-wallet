@@ -2,6 +2,8 @@ package com.payx.payxwallet.exception;
 
 import com.payx.payxwallet.dto.ApiErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -16,10 +18,14 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse> handleValidationException(
             MethodArgumentNotValidException ex,
             HttpServletRequest request) {
+
+        logger.error("Validation exception occurred: {}", ex.getMessage(), ex);
 
         List<ApiErrorResponse.FieldError> fieldErrors = ex.getBindingResult()
                 .getFieldErrors()
@@ -45,6 +51,8 @@ public class GlobalExceptionHandler {
             IllegalArgumentException ex,
             HttpServletRequest request) {
 
+        logger.error("Illegal argument exception occurred: {}", ex.getMessage(), ex);
+
         ApiErrorResponse body = new ApiErrorResponse(
                 Instant.now(),
                 HttpStatus.BAD_REQUEST.value(),
@@ -62,6 +70,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleMethodNotAllowed(
             HttpRequestMethodNotSupportedException ex,
             HttpServletRequest request) {
+
+        logger.error("Method not allowed exception occurred: {}", ex.getMessage(), ex);
 
         ApiErrorResponse body = new ApiErrorResponse(
                 Instant.now(),
@@ -81,7 +91,7 @@ public class GlobalExceptionHandler {
             Exception ex,
             HttpServletRequest request) {
 
-        // (Optional) log stacktrace here using a logger
+        logger.error("Unexpected exception occurred: {}", ex.getMessage(), ex);
 
         ApiErrorResponse body = new ApiErrorResponse(
                 Instant.now(),

@@ -2,12 +2,16 @@ package com.payx.payxwallet.dto;
 
 import com.payx.payxwallet.enums.KycStatus;
 import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 import java.time.LocalDate;
 
 @Getter
 public class UserKycResponse {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserKycResponse.class);
 
     private String userId;
     private String pan;
@@ -45,5 +49,6 @@ public class UserKycResponse {
         this.rejectionReason = rejectionReason;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        logger.debug("UserKycResponse created: {}", this);
     }
 }

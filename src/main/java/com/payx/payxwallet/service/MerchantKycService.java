@@ -8,12 +8,16 @@ import com.payx.payxwallet.entity.MerchantKyc;
 import com.payx.payxwallet.enums.KycStatus;
 import com.payx.payxwallet.repository.MerchantKycRepository;
 import com.payx.payxwallet.repository.MerchantRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
 @Service
 public class MerchantKycService {
+
+    private static final Logger logger = LoggerFactory.getLogger(MerchantKycService.class);
 
     private final MerchantKycRepository merchantKycRepository;
     private final MerchantRepository merchantRepository;
@@ -25,9 +29,13 @@ public class MerchantKycService {
     }
 
     public MerchantKycResponse submitOrUpdateKyc(String merchantId, MerchantKycRequest request) {
+        logger.info("Submitting or updating KYC for merchantId: {}", merchantId);
 
         Merchant merchant = merchantRepository.findById(merchantId)
-                .orElseThrow(() -> new IllegalArgumentException("Merchant not found"));
+                .orElseThrow(() -> {
+                    logger.error("Merchant not found for merchantId: {}", merchantId);
+                    return new IllegalArgumentException("Merchant not found");
+                });
 
         MerchantKyc kyc = merchantKycRepository.findByMerchantId(merchantId)
                 .orElseGet(() -> {
@@ -50,38 +58,49 @@ public class MerchantKycService {
         kyc.setPincode(request.getPincode());
 
         MerchantKyc saved = merchantKycRepository.save(kyc);
-
-        // Optional: add a kycVerified flag to Merchant and update it here later
+        logger.info("KYC submitted or updated successfully for merchantId: {}", merchantId);
 
         return toResponse(saved);
     }
 
     public MerchantKycResponse getMerchantKyc(String merchantId) {
+        logger.info("Fetching KYC for merchantId: {}", merchantId);
         MerchantKyc kyc = merchantKycRepository.findByMerchantId(merchantId)
-                .orElseThrow(() -> new IllegalArgumentException("KYC not found for merchant"));
+                .orElseThrow(() -> {
+                    logger.error("KYC not found for merchantId: {}", merchantId);
+                    return new IllegalArgumentException("KYC not found for merchant");
+                });
+        logger.info("KYC fetched successfully for merchantId: {}", merchantId);
         return toResponse(kyc);
     }
 
     public MerchantKycResponse verifyMerchantKyc(String merchantId) {
+        logger.info("Verifying KYC for merchantId: {}", merchantId);
         MerchantKyc kyc = merchantKycRepository.findByMerchantId(merchantId)
-                .orElseThrow(() -> new IllegalArgumentException("KYC not found for merchant"));
+                .orElseThrow(() -> {
+                    logger.error("KYC not found for merchantId: {}", merchantId);
+                    return new IllegalArgumentException("KYC not found for merchant");
+                });
 
         kyc.setStatus(KycStatus.VERIFIED);
         kyc.setUpdatedAt(Instant.now());
         kyc.setRejectionReason(null);
         MerchantKyc saved = merchantKycRepository.save(kyc);
-
-        // You can later add merchant-level flag like merchant.setKycVerified(true)
+        logger.info("KYC verified successfully for merchantId: {}", merchantId);
 
         return toResponse(saved);
     }
 
     public MerchantKycResponse rejectMerchantKyc(String merchantId, KycDecisionRequest request) {
+        logger.info("Rejecting KYC for merchantId: {}", merchantId);
         MerchantKyc kyc = merchantKycRepository.findByMerchantId(merchantId)
-                .orElseThrow(() -> new IllegalArgumentException("KYC not found for merchant"));
+                .orElseThrow(() -> {
+                    logger.error("KYC not found for merchantId: {}", merchantId);
+                    return new IllegalArgumentException("KYC not found for merchant");
+                });
 
-        // ❗ Block VERIFIED -> REJECTED
         if (kyc.getStatus() == KycStatus.VERIFIED) {
+            logger.error("Attempted to reject a verified KYC for merchantId: {}", merchantId);
             throw new IllegalStateException("Verified KYC cannot be rejected");
         }
 
@@ -89,6 +108,7 @@ public class MerchantKycService {
         kyc.setUpdatedAt(Instant.now());
         kyc.setRejectionReason(request.getRejectionReason());
         MerchantKyc saved = merchantKycRepository.save(kyc);
+        logger.info("KYC rejected successfully for merchantId: {}", merchantId);
 
         return toResponse(saved);
     }

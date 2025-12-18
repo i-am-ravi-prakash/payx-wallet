@@ -3,12 +3,16 @@ package com.payx.payxwallet.dto;
 import com.payx.payxwallet.enums.KycStatus;
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 
 @Getter
 @Setter
 public class MerchantKycResponse {
+
+    private static final Logger logger = LoggerFactory.getLogger(MerchantKycResponse.class);
 
     private String merchantId;
     private String businessPan;
@@ -30,6 +34,7 @@ public class MerchantKycResponse {
                                String addressLine1, String addressLine2, String city,
                                String state, String pincode, KycStatus status,
                                String rejectionReason, Instant createdAt, Instant updatedAt) {
+        logger.debug("Initializing MerchantKycResponse with merchantId: {}", merchantId);
         this.merchantId = merchantId;
         this.businessPan = businessPan;
         this.gstNumber = gstNumber;
@@ -42,5 +47,6 @@ public class MerchantKycResponse {
         this.rejectionReason = rejectionReason;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        logger.info("MerchantKycResponse created for merchantId: {}", merchantId);
     }
 }

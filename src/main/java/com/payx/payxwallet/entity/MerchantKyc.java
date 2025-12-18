@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 
@@ -12,6 +14,8 @@ import java.time.Instant;
 @Getter
 @Setter
 public class MerchantKyc {
+
+    private static final Logger logger = LoggerFactory.getLogger(MerchantKyc.class);
 
     @Id
     private String id;
@@ -34,12 +38,14 @@ public class MerchantKyc {
     private Instant updatedAt;
 
     public MerchantKyc() {
+        logger.debug("MerchantKyc default constructor called");
     }
 
     public MerchantKyc(String merchantId, String businessPan, String gstNumber,
                        String addressLine1, String addressLine2, String city,
                        String state, String pincode, KycStatus status,
                        String rejectionReason, Instant createdAt, Instant updatedAt) {
+        logger.debug("MerchantKyc parameterized constructor called with merchantId: {}", merchantId);
         this.merchantId = merchantId;
         this.businessPan = businessPan;
         this.gstNumber = gstNumber;

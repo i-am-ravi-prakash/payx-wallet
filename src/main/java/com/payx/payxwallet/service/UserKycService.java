@@ -8,12 +8,16 @@ import com.payx.payxwallet.entity.UserKyc;
 import com.payx.payxwallet.enums.KycStatus;
 import com.payx.payxwallet.repository.UserKycRepository;
 import com.payx.payxwallet.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
 @Service
 public class UserKycService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserKycService.class);
 
     private final UserKycRepository userKycRepository;
     private final UserRepository userRepository;
@@ -24,9 +28,13 @@ public class UserKycService {
     }
 
     public UserKycResponse submitOrUpdateKyc(String userId, UserKycRequest request) {
+        logger.info("Submitting or updating KYC for userId: {}", userId);
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> {
+                    logger.error("User not found for userId: {}", userId);
+                    return new IllegalArgumentException("User not found");
+                });
 
         UserKyc kyc = userKycRepository.findByUserId(userId)
                 .orElseGet(() -> {
@@ -49,36 +57,37 @@ public class UserKycService {
         kyc.setState(request.getState());
         kyc.setPincode(request.getPincode());
 
-        // Ensure userId is set (for new records)
-        // the getter might have userId null for new
         if (kyc.getUserId() == null) {
-            // we need a setter or use constructor, so add setter:
-            // (add setUserId in UserKyc class if not present)
+            kyc.setUserId(userId);
         }
-
-        // Let's add setUserId in UserKyc class
-        // then:
-        kyc.setUserId(userId);
 
         UserKyc saved = userKycRepository.save(kyc);
 
-        // KYC submitted = not yet verified
         user.setKycVerified(false);
         userRepository.save(user);
 
+        logger.info("KYC submitted or updated successfully for userId: {}", userId);
         return toResponse(saved);
     }
 
     public UserKycResponse getUserKyc(String userId) {
+        logger.info("Fetching KYC for userId: {}", userId);
         UserKyc kyc = userKycRepository.findByUserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException("KYC not found for user"));
+                .orElseThrow(() -> {
+                    logger.error("KYC not found for userId: {}", userId);
+                    return new IllegalArgumentException("KYC not found for user");
+                });
 
         return toResponse(kyc);
     }
 
     public UserKycResponse verifyUserKyc(String userId) {
+        logger.info("Verifying KYC for userId: {}", userId);
         UserKyc kyc = userKycRepository.findByUserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException("KYC not found for user"));
+                .orElseThrow(() -> {
+                    logger.error("KYC not found for userId: {}", userId);
+                    return new IllegalArgumentException("KYC not found for user");
+                });
 
         kyc.setStatus(KycStatus.VERIFIED);
         kyc.setUpdatedAt(Instant.now());
@@ -86,19 +95,27 @@ public class UserKycService {
         UserKyc saved = userKycRepository.save(kyc);
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> {
+                    logger.error("User not found for userId: {}", userId);
+                    return new IllegalArgumentException("User not found");
+                });
         user.setKycVerified(true);
         userRepository.save(user);
 
+        logger.info("KYC verified successfully for userId: {}", userId);
         return toResponse(saved);
     }
 
     public UserKycResponse rejectUserKyc(String userId, KycDecisionRequest request) {
+        logger.info("Rejecting KYC for userId: {}", userId);
         UserKyc kyc = userKycRepository.findByUserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException("KYC not found for user"));
+                .orElseThrow(() -> {
+                    logger.error("KYC not found for userId: {}", userId);
+                    return new IllegalArgumentException("KYC not found for user");
+                });
 
-        // ❗ Block transition VERIFIED -> REJECTED
         if (kyc.getStatus() == KycStatus.VERIFIED) {
+            logger.error("Attempt to reject verified KYC for userId: {}", userId);
             throw new IllegalStateException("Verified KYC cannot be rejected");
         }
 
@@ -108,10 +125,14 @@ public class UserKycService {
         UserKyc saved = userKycRepository.save(kyc);
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> {
+                    logger.error("User not found for userId: {}", userId);
+                    return new IllegalArgumentException("User not found");
+                });
         user.setKycVerified(false);
         userRepository.save(user);
 
+        logger.info("KYC rejected successfully for userId: {}", userId);
         return toResponse(saved);
     }
 
