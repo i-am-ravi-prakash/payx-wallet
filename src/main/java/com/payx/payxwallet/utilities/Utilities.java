@@ -29,4 +29,8 @@ public class Utilities {
 
         return obj.toString().trim().isEmpty();
     }
+
+    public static boolean isValidAmount(double amount, double minLimit, double maxLimit) {
+        return amount > 0 && amount >= minLimit && amount <= maxLimit;
+    }
 }
